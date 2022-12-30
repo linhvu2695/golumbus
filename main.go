@@ -12,13 +12,14 @@ import (
 )
 
 func main() {
-	logger := log.New(os.Stdout, "product-api", log.LstdFlags)
-	helloHandler := handlers.NewHello(logger)
-	goodbyeHandler := handlers.NewGoodbye(logger)
+	logger := log.New(os.Stdout, "book-api", log.LstdFlags)
 
+	// create API handlers
+	ph := handlers.NewProducts(logger)
+
+	// create new servemux and register the handlers
 	servemux := http.NewServeMux()
-	servemux.Handle("/", helloHandler)
-	servemux.Handle("/goodbye", goodbyeHandler)
+	servemux.Handle("/", ph)
 
 	server := &http.Server{
 		Addr:         ":9090",
@@ -43,5 +44,4 @@ func main() {
 	logger.Println("Received termination signal, graceful shutdown", sig)
 	timeoutContext, _ := context.WithTimeout(context.Background(), 30*time.Second)
 	server.Shutdown(timeoutContext)
-
 }
